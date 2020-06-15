@@ -12,6 +12,7 @@ from multiprocessing import Pool
 from multiprocessing import Process, Manager
 import itertools
 import pandas as pd
+import operator
 
 users = {"Angelica": {"Blues Traveler": 3.5, "Broken Bells": 2.0, "Norah Jones": 4.5, "Phoenix": 5.0,
 "Slightly Stoopid": 1.5,
@@ -42,6 +43,9 @@ users = {"Angelica": {"Blues Traveler": 3.5, "Broken Bells": 2.0, "Norah Jones":
 
 #Similitud cose multi_processing
 
+def normalizarUnitario(nombre,valor,maximo,minimo):
+    normal=(((2*(valor-minimo)) - (maximo-minimo))/(maximo-minimo))*-1
+    return (nombre,normal)
 def getPromedio(ratingsUser,item,item2):
     if item in ratingsUser[1] and item2 in ratingsUser[1]: 
         promedio=0
@@ -470,7 +474,7 @@ class Recomendador:
         ratings1=[]
         ratings2=[]
         dictlist = []
-        dictlist = [ ([k,v],item1,item2 ) for k, v in self.data.items() ]
+        dictlist = [ (v,item1,item2 ) for k, v in self.data.items() ]
         number_of_workers = 24
         with Pool(number_of_workers) as p:
             informacion = p.starmap(getPromedio, dictlist)      
@@ -487,112 +491,28 @@ class Recomendador:
         parte2 = sqrt(sum(list(parte2)))
         denominador= parte1*parte2
         print(round(numerador/denominador,4))
+    
+    def normalizar(self,usuario):
+        ratings = self.data[usuario];
+        print(ratings)
+        mayor=max(ratings.items(), key=operator.itemgetter(1))[0]
+        mayor= ratings[mayor]
+        menor=min(ratings.items(), key=operator.itemgetter(1))[0]
+        menor= ratings[menor]
+        dictlist = []
+        dictlist = [ (k,v,menor,mayor) for k, v in ratings.items() ]
+        number_of_workers = 24
+        informacion=[]
+        with Pool(number_of_workers) as p:
+            informacion = p.starmap(normalizarUnitario, dictlist)
+                
+        print(informacion)
+
 
 
 if __name__ == '__main__':
     recomendador = Recomendador({}, k=4, metric='coseno', n=4)
     recomendador.loadMovieRatingsDB("test1.csv")
-    recomendador.cosenoAjustado("Kacey","Imagine")
-
-    '''
-    recomendador.loadBookDB("dataset/BX-Dump/")
-    print("time to load data books db: " , time.process_time()-t)
-    t= time.process_time()
-    resultado = recomendador.recommend("171118")
-    #print("time process books db" , time.process_time()-t)
-    '''
-    '''
-    t= time.process_time()
-    recomendador.loadMovieLens20M("ml-20m/")
-    print("time to load movielens 20M db: " , time.process_time()-t)
-    t= time.process_time()
-    resultado = recomendador.recommend("26894")
-    #print("time to process movielens 20M db: " , time.process_time()-t)
-    print(resultado)
-    '''
-    '''
-    recomendador = Recomendador({}, k=10, metric='coseno', n=5)
-    recomendador.loadMovieRatingsDB("dataset/")
-    print(recomendador.porcentajeProyectado("Jessica", "Alien"))
-
-
-    recomendador = Recomendador({}, k=8, metric='pearson', n=5)
-    recomendador.loadMovieRatingsDB("dataset/")
-    print(recomendador.porcentajeProyectado("Katherine", "Spiderman"))
-    '''
-    #recomendador = Recomendador({}, k=10, metric='coseno', numRecomendaciones=5)
-    #recomendador.loadMovieRatingsDB("dataset/")
-    #print(recomendador.porcentajeProyectado("Jessica", "Alien"))
-
-
-    #recomendador = Recomendador({}, k=8, metric='pearson', numRecomendaciones=5)
-    #recomendador.loadMovieRatingsDB("dataset/")
-    #print(recomendador.porcentajeProyectado("Katherine", "Spiderman"))
-    #print(recomendador.multipleRecommend(["Patrick C", "Matt"]))
-
-
-'''
-t= time.process_time()
-recomendador.loadMovieLens("ml-10M100K/")
-print("load data movielens 10M db: " , time.process_time()-t)
-'''
-'''
-t= time.process_time()
-recomendador.loadMovieLens20M("ml-20m/")
-print("time to load movielens 20M db: " , time.process_time()-t)
-t= time.process_time()
-print(recomendador.recommend("26894"))
-print("time to process movielens 20M db: " , time.process_time()-t)
-'''
-'''
-recomendador.loadMovieLens27M("ml-latest/")
-print("time to load movielens 27M db: ", time.process_time()-t)
-t= time.process_time()
-print(recomendador.recommend("26894"))
-print("time to process movielens 27M db: ", time.process_time()-t)
-'''
-#26894
-#138493
-
-
-#print(recomendador.similitudCoseno(users["Angelica"], users["Veronica"]))
-
-#Base de datos pequeña
-#1 3knn hailey distancia coseno q' recomendaria
-#print("-------------------1---------------------------")
-#recomendador = Recomendador(users, k=8, metric='coseno', n=5)
-#print("Mas cercanos:")
-#print(recomendador.recommend("Hailey"))
-
-#recomendador.data.to_csv("usuarios.csv", sep=',', encoding='utf-8')
-
-
-#print("-------------------2---------------------------")
-#2 10knn Sam distancia Euclidiana q recomendaria
-#recomendador = Recomendador(users, k=7, metric='euclidiana', n=5)
-#print(recomendador.recommend("Sam"))
-
-
-#print("-------------------3---------------------------")
-#3 5knn veronica q recomendaria
-#recomendador = Recomendador(users, k=5, metric='pearson', numRecomendaciones=5)
-#print(recomendador.recommend("Veronica"))
-
-#4 que puntaje bill le dara a The strokes usando (Influencia, puntaje proy)
-'''
-recomendador = Recomendador(users, k=4, metric='coseno', n=5)
-print(recomendador.porcentajeProyectado("Bill", "The Strokes"))
-
-recomendador = Recomendador(users, k=4, metric='pearson', n=5)
-print(recomendador.porcentajeProyectado("Bill", "The Strokes"))
-
-#####
-recomendador = Recomendador(users, k=3, metric='pearson', n=5)
-print(recomendador.porcentajeProyectado("Hailey", "Phoenix"))
-
-recomendador = Recomendador(users, k=2, metric='coseno', n=5)
-print(recomendador.porcentajeProyectado("Hailey", "Slightly Stoopid"))
-'''
-
-#clear RAM
-#su -c "echo 3 >'/proc/sys/vm/drop_caches' && swapoff -a && swapon -a && printf '\n%s\n' 'Ram-cache and Swap Cleared'" root
+    #recomendador.cosenoAjustado("Kacey","Imagine")
+    recomendador.normalizar("David")
+    

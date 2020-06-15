@@ -32,15 +32,15 @@ int main(int argc, char ** argv){
 
 	for(ValVec vec : valsNorm){
 		printValVec(vec);
-	}
+	} 
 
 	IndexType userIndex = 0;
 	IndexType productIndex = 0;	
 
 	while(true){
-		//for(int i = 0; i < names.size(); i++){
-		//	cout<<i<<") "<<names[i]<<endl;
-		//}
+		for(int i = 0; i < names.size(); i++){
+			cout<<i<<") "<<names[i]<<endl;
+		}
 
 		cout<<endl<<"Usuario->";
 		cin>>userIndex;

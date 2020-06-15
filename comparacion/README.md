@@ -1,2 +1,2 @@
 # Topicos
-Las bases de datos no se han subido
+Las bases de datos grandes no se han subido

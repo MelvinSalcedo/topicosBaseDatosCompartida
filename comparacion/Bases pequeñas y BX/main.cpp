@@ -60,7 +60,7 @@ int main(int argc, char ** argv){
 		//cout<<"matriz"<< SimilarityMatrix(vals)<<endl;
 		cout<<"resN->"<<resN<<endl;
 
-		cout<<"El usuario "<<" daría "<<desnormalize(vals, resN, userIndex)<<" al producto "<<endl;
+		cout<<"El usuario "<<names[userIndex]<<" daría "<<desnormalize(vals, resN, userIndex)<<" al producto "<<songs[productIndex]<<endl<<endl;
 	}
 
 

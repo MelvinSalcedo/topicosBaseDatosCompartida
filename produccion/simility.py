@@ -474,7 +474,7 @@ class Recomendador:
         ratings1=[]
         ratings2=[]
         dictlist = []
-        dictlist = [ (v,item1,item2 ) for k, v in self.data.items() ]
+        dictlist = [ ([k,v],item1,item2 ) for k, v in self.data.items() ]
         number_of_workers = 24
         with Pool(number_of_workers) as p:
             informacion = p.starmap(getPromedio, dictlist)      
@@ -490,11 +490,11 @@ class Recomendador:
         parte2 = map(lambda x:x*x , ratings2)
         parte2 = sqrt(sum(list(parte2)))
         denominador= parte1*parte2
-        print(round(numerador/denominador,4))
+        return round(numerador/denominador,4)
     
     def normalizar(self,usuario):
         ratings = self.data[usuario];
-        print(ratings)
+        #print(ratings)
         mayor=max(ratings.items(), key=operator.itemgetter(1))[0]
         mayor= ratings[mayor]
         menor=min(ratings.items(), key=operator.itemgetter(1))[0]
@@ -506,13 +506,14 @@ class Recomendador:
         with Pool(number_of_workers) as p:
             informacion = p.starmap(normalizarUnitario, dictlist)
                 
-        print(informacion)
-
-
+        #print(informacion)
+        return informacion
+    def predecir(self,usuario,item):
+        return 0
 
 if __name__ == '__main__':
     recomendador = Recomendador({}, k=4, metric='coseno', n=4)
     recomendador.loadMovieRatingsDB("test1.csv")
-    #recomendador.cosenoAjustado("Kacey","Imagine")
-    recomendador.normalizar("David")
+    print(recomendador.cosenoAjustado("Imagine","Lorde"))
+    #recomendador.normalizar("David")
     

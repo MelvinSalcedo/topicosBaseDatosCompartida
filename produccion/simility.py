@@ -46,19 +46,11 @@ def getPromedio(ratingsUser,item,item2):
     if item in ratingsUser and item2 in ratingsUser:  
         promedio=0
         denominador=1
-        ratings={
-            item : [],
-            item2 :[]
-        }
         for key in ratingsUser:
             promedio+=ratingsUser[key]
-            if(key==item):
-                ratings[item].append(ratingsUser[key])
-            if(key==item2):
-                 ratings[item2].append(ratingsUser[key])
         promedio=promedio/len(ratingsUser)
         numerador = (promedio-ratingsUser[item])*(promedio-ratingsUser[item2])
-        return (ratings,numerador,promedio)
+        return (numerador,promedio)
     return False
 
 
@@ -478,12 +470,22 @@ class Recomendador:
         ratings1=[]
         ratings2=[]
         for user in self.data:
-            data=getPromedio(self.data[user],item1,item2)
-            if(data!=False):
-                numerador += data[1]
-                ratings1.append(data[0][item1][0])
-                ratings2.append(data[0][item2][0])
-        print(ratings1)
+            dictlist = []
+            dictlist = [(self.data[user],item1,item2)]
+            number_of_workers = 24
+            with Pool(number_of_workers) as p:
+                data = p.starmap(getPromedio, dictlist)      
+                if(data[0]!=False):
+                    numerador += data[0][0]
+                    promedio = data[0][1]
+                    ratings1.append(self.data[user][item1] - promedio)
+                    ratings2.append(self.data[user][item2] - promedio)
+        parte1 = map(lambda x:x*x , ratings1)
+        parte1 = sqrt(sum(list(parte1)))
+        parte2 = map(lambda x:x*x , ratings2)
+        parte2 = sqrt(sum(list(parte2)))
+        denominador= parte1*parte2
+        print(round(numerador/denominador,4))
 
 
 if __name__ == '__main__':

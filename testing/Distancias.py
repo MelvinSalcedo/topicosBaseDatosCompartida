@@ -319,6 +319,67 @@ def RatingcomputeSimilar(user1,band,listNamesBandas,userRatings):
     #print("resultado final = ",resultadorFinal)
     return resultadorFinal
 
+def RatingcomputeSimilarOnlineForMovierating(user1,band,listNamesBandas,userRatings):
+    #'Patrick C', 'Alien',listaNombresBD, '
+    longitud=len(listNamesBandas)
+    matriz={}
+    averages = {}
+    for (key, ratings) in userRatings.items():
+        averages[key] = (float(sum(ratings.values()))
+                         /len(ratings.values()))
+    #print('\n\n',averages,'\n','\n')
+    print("total de usuarios",longitud);
+    denominador2=0
+    iii=0
+    for x in range(len(listNamesBandas)):
+        num = 0 # numerator
+        dem1 = 0 # first half of denominator
+        dem2 = 0
+        band1=band; band2=listNamesBandas[x]
+        iii+=1
+        #print(iii)
+        if(band1!=band2):
+            for (user, ratings) in userRatings.items():
+                if band1 in ratings and band2 in ratings:
+                    avg = averages[user]
+                    num += (ratings[band1] - avg) * (ratings[band2] - avg)
+                    dem1 += (ratings[band1] - avg)**2
+                    dem2 += (ratings[band2] - avg)**2
+            cen=(sqrt(dem1) * sqrt(dem2))
+            if(cen==0):
+                result=0
+            else:
+                result=( num / cen)
+            denominador2+=abs(result)
+            matriz[band2] = result
+    print("matriz calculada")
+    maxNumber=max(userRatings[user1].items(), key=operator.itemgetter(1))[1]
+    minNumber=min(userRatings[user1].items(), key=operator.itemgetter(1))[1]
+    print("hallando maximos y minimos")
+    #print("max number is = ",maxNumber,minNumber);
+    normalizeData={}
+    for i,x in userRatings[user1].items():
+        normalizeData[i]=(2*(x-minNumber)-(maxNumber-minNumber))/(maxNumber-minNumber)
+    print("data normalizada")    
+    numerador2=0
+    #Predecir el puntaje que X dará a Y
+    for i,x in normalizeData.items():
+        print(i,x)
+        if(i==band):
+            print("el usuario ya califico a esta banda")
+            return "el usuario ya califico a esta banda"
+        if(i in matriz):
+            #print("-<> ",matriz[i],"|",normalizeData[i])
+            numerador2+=matriz[i]*normalizeData[i]
+            
+    p=numerador2/denominador2
+    #print("numerador= ",numerador2,"denominador= ",denominador2);
+    print(p)
+    #desnormalizar
+    resultadorFinal=0.5*((p+1)*(maxNumber-minNumber))+minNumber;
+    #print("resultado final = ",resultadorFinal)
+    return resultadorFinal
+
 def loadBookDB(path=''):
         """loads the BX book dataset. Path is where the BX files are
         located"""
@@ -553,15 +614,18 @@ if __name__=="__main__":
              "Tori": {"1": 5, "2": 4,
              "3": 5, "5": 3}}
                 
-    #userRatings = CargarBinario("Book_data")
-    #listaNombresBD =CargarBinario("Book_names")
+    userRatings = CargarBinario("Movie_Ratings")
+    listaNombresBD =CargarBinario("Movie_Ratings_namePeliculas")
     
-    #RatingcomputeSimilar('276725', 'Classical Mythology',listaNombresBD, userRatings)
+    RatingcomputeSimilarOnlineForMovierating('Patrick C', 'Alien',listaNombresBD, userRatings)
     
     listaNombresBD = {'Kacey Musgraves':'1','Imagine Dragons':'2','Daft Punk':'3', '4':'4','Fall Out Boy':'5'}
     RatingcomputeSimilar('David', 'Kacey Musgraves',listaNombresBD, users3)
     
+<<<<<<< HEAD:testing/Distancias.py
     
+=======
+>>>>>>> a0a939f541e2e2dfa39a5995037d4f388474f541:Distancias.py
     #loadMoviLens27()
     #loadMovieRating()
     #loadBookDB("dataBook/")

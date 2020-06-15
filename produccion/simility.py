@@ -43,14 +43,14 @@ users = {"Angelica": {"Blues Traveler": 3.5, "Broken Bells": 2.0, "Norah Jones":
 #Similitud cose multi_processing
 
 def getPromedio(ratingsUser,item,item2):
-    if item in ratingsUser and item2 in ratingsUser:  
+    if item in ratingsUser[1] and item2 in ratingsUser[1]: 
         promedio=0
         denominador=1
-        for key in ratingsUser:
-            promedio+=ratingsUser[key]
-        promedio=promedio/len(ratingsUser)
-        numerador = (promedio-ratingsUser[item])*(promedio-ratingsUser[item2])
-        return (numerador,promedio)
+        for key in ratingsUser[1]:
+            promedio+=ratingsUser[1][key]
+        promedio=promedio/len(ratingsUser[1])
+        numerador = (promedio-ratingsUser[1][item])*(promedio-ratingsUser[1][item2])
+        return (ratingsUser[0],numerador,promedio)
     return False
 
 
@@ -469,15 +469,16 @@ class Recomendador:
         numerador=0
         ratings1=[]
         ratings2=[]
-        for user in self.data:
-            dictlist = []
-            dictlist = [(self.data[user],item1,item2)]
-            number_of_workers = 24
-            with Pool(number_of_workers) as p:
-                data = p.starmap(getPromedio, dictlist)      
-                if(data[0]!=False):
-                    numerador += data[0][0]
-                    promedio = data[0][1]
+        dictlist = []
+        dictlist = [ ([k,v],item1,item2 ) for k, v in self.data.items() ]
+        number_of_workers = 24
+        with Pool(number_of_workers) as p:
+            informacion = p.starmap(getPromedio, dictlist)      
+            for data in informacion:
+                if(data!=False):
+                    user= data[0]
+                    numerador += data[1]
+                    promedio = data[2]
                     ratings1.append(self.data[user][item1] - promedio)
                     ratings2.append(self.data[user][item2] - promedio)
         parte1 = map(lambda x:x*x , ratings1)

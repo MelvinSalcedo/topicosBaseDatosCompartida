@@ -3,16 +3,52 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <map>
+#include <unordered_map>
 #include <unordered_set>
 #include <functional>
 #include <string>
 #include <ctime>
 #include <set>
+#include <cmath>
 #include <vector>
 
 using namespace std;
 typedef int value;
 typedef unordered_map<value,value> hashmap;
+
+
+class ListItem{
+    public:
+        ListItem();
+        void add_rating(string user, string item, int rating);
+        int get_userid(string user);
+        string get_username(int userid);
+        void add_user(string user);
+        unordered_map<int,int> get_itemratings(string item);
+        int size();
+        int n_users();
+        void write_csv(string file);
+        double get_user_avg(string user);
+        double get_item_avg(string item);
+        double general_avg();
+        void compute_general_avgs();
+        double get_genavg_item();
+        double get_genavg_user();
+        set<string> get_user_list(string user);
+        vector<string> get_items();
+    private:
+        unordered_map<string,int> UserId;
+        unordered_map<int,string> IdUser;
+        double general_avg_item;
+        double general_avg_user;
+        int n_id;
+        pair<double,double> gen_avg;
+        unordered_map<string, unordered_map<int, int>> ItemRatings;
+        map<string, pair<double,int>> UserAvg;
+        map<string, pair<double,int>> ItemAvg;
+        map<string, set<string>> UserList;
+};
 
 class FileReader{
     public:
@@ -48,38 +84,6 @@ ListItem FileReader::read_csv(string file){
     return list;
 }
 
-
-class ListItem{
-    public:
-        ListItem();
-        void add_rating(string user, string item, int rating);
-        int get_userid(string user);
-        string get_username(int userid);
-        void add_user(string user);
-        unordered_map<int,int> get_itemratings(string item);
-        int size();
-        int n_users();
-        void write_csv(string file);
-        double get_user_avg(string user);
-        double get_item_avg(string item);
-        double general_avg();
-        void compute_general_avgs();
-        double get_genavg_item();
-        double get_genavg_user();
-        set<string> get_user_list(string user);
-        vector<string> get_items();
-    private:
-        unordered_map<string,int> UserId;
-        unordered_map<int,string> IdUser;
-        double general_avg_item;
-        double general_avg_user;
-        int n_id;
-        pair<double,double> gen_avg;
-        unordered_map<string, unordered_map<int, int> > ItemRatings;
-        map<string, pair<double,int> > UserAvg;
-        map<string, pair<double,int> > ItemAvg;
-        map<string, set<string> > UserList;
-};
 
 class Recommender{
     public:

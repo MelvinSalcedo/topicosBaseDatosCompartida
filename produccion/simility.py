@@ -144,7 +144,8 @@ class Recomendador:
         self.userid2name = {}
         self.productid2name = {}
         self.metric = metric
-
+        self.minimo=""
+        self.maximo=""
         if type(data).__name__ == 'dict':
             self.data = data
 
@@ -157,6 +158,8 @@ class Recomendador:
             for k,v in self.data2[key].iteritems():
                 if not pd.isnull(v):
                     newRatings[k] = v
+                if (k in self.productid2name) == False:
+                    self.productid2name[k]=k
             self.data[key] = newRatings
                 
     def convertProductID2name(self, id):
@@ -166,42 +169,8 @@ class Recomendador:
             return id
 
     def loadBookDB(self, path=''):
-        '''
-        manager = Manager() 
-        self.data = manager.dict()
-       
-        self.data = {}
-        f = codecs.open(path + "BX-Book-Ratings.csv", 'r', 'utf8')
-        for line in f:
-            fields = line.split(';')
-            user = fields[0].strip('"')
-            book = fields[1].strip('"')
-            rating = int(fields[2].strip().strip('"'))
-            if user in self.data:
-                currentRatings = self.data[user]
-            else:
-                currentRatings = {}
-            currentRatings[book] = rating
-            self.data[user] = currentRatings
-        f.close()
-        self.save_obj(self.data, "ratings_books")
         self.data = self.load_obj("ratings_books")
-        
-        '''
-        self.data = self.load_obj("ratings_books")
-        #self.data.update(self.load_obj("ratings_books"))
-        '''
-        f = codecs.open(path + "BX-Books.csv", 'r', 'utf8')
-        for line in f:
-            fields = line.split(';')
-            isbn = fields[0].strip('"')
-            title = fields[1].strip('"')
-            author = fields[2].strip().strip('"')
-            title = title + ' by ' + author
-            self.productid2name[isbn] = title
-        f.close()
-        self.save_obj(self.productid2name, "product_books") 
-        '''
+ 
         self.productid2name = self.load_obj("product_books")
         
         
@@ -227,110 +196,15 @@ class Recomendador:
     def loadMovieLens(self, path=''):
         self.data = self.load_obj("ratings10m")
         self.productid2name = self.load_obj("product_movies10m")
-        '''
-        self.data = {}
-        i = 0
-        f = codecs.open(path + "ratings.dat", 'r', 'utf8')
-        for line in f:
-            i += 1
-            fields = line.split('::')
-            user = fields[0].strip('"')
-            movie = fields[1].strip('"')
-            rating = float(fields[2].strip().strip('"'))
-            if user in self.data:
-                currentRatings = self.data[user]
-            else:
-                currentRatings = {}
-            currentRatings[movie] = rating
-            self.data[user] = currentRatings
-        f.close()
-
-        self.save_obj(self.data, "ratings10m")
-
-        f = codecs.open(path + "movies.dat", 'r', 'utf8')
-        for line in f:
-            i += 1
-            fields = line.split('::')
-            movieId = fields[0].strip('"')
-            title = fields[1].strip('"')
-            genre = fields[2].strip().strip('"')
-            title = title + ', ' + genre
-            self.productid2name[movieId] = title
-        f.close()
-
-        self.save_obj(self.productid2name, "product_movies10m")
-        '''
     
     #Load movielens 20M
     def loadMovieLens20M(self, path=''):
         self.data = self.load_obj("ratings20m")
-        #return
-        '''
-        f = codecs.open(path + "ratings.csv", 'r', 'utf8')
-        for line in f:
-            try:
-                fields = line.split(',')
-                user = fields[0].strip('"')
-                movie = fields[1].strip('"')
-                rating = float(fields[2].strip().strip('"'))
-                if user in self.data:
-                    currentRatings = self.data[user]
-                else:
-                    currentRatings = {}
-                currentRatings[movie] = rating
-                self.data[user] = currentRatings
-            except Exception:
-                continue
-
-        self.save_obj(self.data, "ratings20m")
-        f.close()
-        '''
-        '''
-        f = codecs.open(path + "movies.csv", 'r', 'utf8')
-        for line in f:
-            fields = line.split(',')
-            movieId = fields[0].strip('"')
-            title = fields[1].strip('"')
-            genre = fields[2].strip().strip('"')
-            title = title + ', ' + genre
-            self.productid2name[movieId] = title
-        f.close()
-        self.save_obj(self.productid2name, "product_movies20m")
-        '''
         self.productid2name = self.load_obj("product_movies20m")
 
     #Load movielens 27M
     def loadMovieLens27M(self, path=''):
         self.data = self.load_obj("ratings27m")
-        '''
-        f = codecs.open(path + "ratings.csv", 'r', 'utf8')
-        for line in f:
-            try:
-                fields = line.split(',')
-                user = fields[0].strip('"')
-                movie = fields[1].strip('"')
-                rating = float(fields[2].strip().strip('"'))
-                if user in self.data:
-                    currentRatings = self.data[user]
-                else:
-                    currentRatings = {}
-                currentRatings[movie] = rating
-                self.data[user] = currentRatings
-            except Exception:
-                continue
-        self.save_obj(self.data, "ratings27m")
-        f.close()
-        f = codecs.open(path + "movies.csv", 'r', 'utf8')
-        for line in f:
-            fields = line.split(',')
-            movieId = fields[0].strip('"')
-            title = fields[1].strip('"')
-            genre = fields[2].strip().strip('"')
-            title = title + ', ' + genre
-            self.productid2name[movieId] = title
-        f.close()
-        self.save_obj(self.productid2name, "product_movies27m")
-        '''
         self.productid2name = self.load_obj("product_movies27m")
         
 
@@ -476,6 +350,7 @@ class Recomendador:
         dictlist = []
         dictlist = [ ([k,v],item1,item2 ) for k, v in self.data.items() ]
         number_of_workers = 24
+        bandera=False
         with Pool(number_of_workers) as p:
             informacion = p.starmap(getPromedio, dictlist)      
             for data in informacion:
@@ -485,35 +360,68 @@ class Recomendador:
                     promedio = data[2]
                     ratings1.append(self.data[user][item1] - promedio)
                     ratings2.append(self.data[user][item2] - promedio)
-        parte1 = map(lambda x:x*x , ratings1)
-        parte1 = sqrt(sum(list(parte1)))
-        parte2 = map(lambda x:x*x , ratings2)
-        parte2 = sqrt(sum(list(parte2)))
-        denominador= parte1*parte2
-        return round(numerador/denominador,4)
+             
+        if(len(ratings1)>0 and len(ratings2)>0):
+            parte1 = map(lambda x:x*x , ratings1)
+            parte1 = sqrt(sum(list(parte1)))
+            parte2 = map(lambda x:x*x , ratings2)
+            parte2 = sqrt(sum(list(parte2)))
+            denominador= parte1*parte2
+            return numerador/denominador
+        else:
+            return False
+
     
     def normalizar(self,usuario):
         ratings = self.data[usuario];
         #print(ratings)
         mayor=max(ratings.items(), key=operator.itemgetter(1))[0]
-        mayor= ratings[mayor]
+        self.mayor = ratings[mayor]
         menor=min(ratings.items(), key=operator.itemgetter(1))[0]
-        menor= ratings[menor]
+        self.menor =ratings[menor]
         dictlist = []
-        dictlist = [ (k,v,menor,mayor) for k, v in ratings.items() ]
+        dictlist = [ (k,v,self.menor,self.mayor) for k, v in ratings.items() ]
         number_of_workers = 24
         informacion=[]
         with Pool(number_of_workers) as p:
             informacion = p.starmap(normalizarUnitario, dictlist)
-                
         #print(informacion)
         return informacion
     def predecir(self,usuario,item):
-        return 0
+        dictlist = []
+        dictlist = [ k for k, v in self.productid2name.items() if k !=item]
+        matriz={}
+        for clave in dictlist:
+            similitud = self.cosenoAjustado(item,clave);
+            if(similitud!=False):
+                matriz[clave]=similitud
+                
+        calificaciones = self.normalizar(usuario)
+        numerador=0
+        denominador=0
+        for calificacion in calificaciones:
+            numerador+=calificacion[1]*matriz[calificacion[0]]
+
+            denominador=denominador+abs(matriz[calificacion[0]])
+        porcentaje = numerador/denominador
+
+        #desnormalizar
+        calificacion = (((porcentaje+1)*(self.mayor-self.menor))/2)+self.menor
+
+
+        return calificacion
+
 
 if __name__ == '__main__':
     recomendador = Recomendador({}, k=4, metric='coseno', n=4)
     recomendador.loadMovieRatingsDB("test1.csv")
-    print(recomendador.cosenoAjustado("Imagine","Lorde"))
+    #print(recomendador.cosenoAjustado("Kacey","Lorde"))
     #recomendador.normalizar("David")
-    
+    print(recomendador.predecir("David","Kacey"))
+    '''
+    recomendador = Recomendador({}, k=4, metric='coseno', n=4)
+
+    t= time.process_time()
+    recomendador.loadMovieLens20M("ml-25m/")
+    print("time to load movielens 25M db: " , time.process_time()-t)
+    recomendador.predecir("David","Kacey")'''

@@ -542,7 +542,7 @@ def loadMovieRating(path=''):
         
         
 if __name__=="__main__":
-    '''users3 = {"David": {"2": 3, "3": 5,
+    users3 = {"David": {"2": 3, "3": 5,
              "4": 4, "5": 1},
              "Matt": {"2": 3, "3": 4,
              "4": 4, "5": 1},
@@ -551,18 +551,18 @@ if __name__=="__main__":
              "Chris": {"1": 4, "2": 4,
              "3": 4, "4": 3, "5": 1},
              "Tori": {"1": 5, "2": 4,
-             "3": 5, "5": 3}}'''
+             "3": 5, "5": 3}}
                 
     #userRatings = CargarBinario("Book_data")
     #listaNombresBD =CargarBinario("Book_names")
     
     #RatingcomputeSimilar('276725', 'Classical Mythology',listaNombresBD, userRatings)
     
-    '''listaNombresBD = {'Kacey Musgraves':'1','Imagine Dragons':'2','Daft Punk':'3', '4':'4','Fall Out Boy':'5'}
+    listaNombresBD = {'Kacey Musgraves':'1','Imagine Dragons':'2','Daft Punk':'3', '4':'4','Fall Out Boy':'5'}
     RatingcomputeSimilar('David', 'Kacey Musgraves',listaNombresBD, users3)
-    #print(computeSimilarity(lista,users3))'''
     
-    loadMoviLens27()
+    
+    #loadMoviLens27()
     #loadMovieRating()
     #loadBookDB("dataBook/")
     #loadMoviLens()

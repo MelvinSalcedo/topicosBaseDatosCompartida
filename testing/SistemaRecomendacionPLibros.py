@@ -261,21 +261,28 @@ class ejemplo_GUI(QMainWindow):
         self.tipoBaseDatos=0
         self.k=self.knn.text()
         self.objetoClaseRecomender = recommender(int(self.k))
-        self.ChangeBaseDatos()
+        self.ChangeBaseDatos() 
+        self.tipeBase=0
         
     def ChangeBaseDatos(self):
-
         if(self.MovieLens.isChecked()):
+            self.tipeBase=0
             self.objetoClaseRecomender.loadMovieLensN()
             
         elif(self.book.isChecked()):
+            self.tipeBase=4
             self.objetoClaseRecomender.loadBookDB()
             
         elif(self.MovieRating.isChecked()):
+            self.tipeBase=1
             self.objetoClaseRecomender.loadMovieRating()
             
         elif(self.MovieLens27.isChecked()):
+            self.tipeBase=3
             self.objetoClaseRecomender.loadMovieLens27m()
+        print("data cambiada",self.tipeBase)
+            
+        
             
 
     def IniciarConsultaDistancia(self):
@@ -392,10 +399,19 @@ class ejemplo_GUI(QMainWindow):
             self.textEdit.setText("El usuario "+p11+ " no existe")
             return
         #RatingcomputeSimilar('1', 'Toy Story (1995)',listaNombresBD, userRatings)
-        if(self.CosenoAjustado.isChecked()):
-            distancia = fl.RatingcomputeSimilar(p11,p22,self.objetoClaseRecomender.listaNombresBD,
-                                             self.objetoClaseRecomender.data)
+        if(self.CosenoAjustado.isChecked() and self.tipeBase==0):
+            distancia = fl.RatingSimilitudCoseno(p11,p22,self.objetoClaseRecomender.data)
             self.textEdit.setText(str(distancia))
+        
+        if(self.CosenoAjustado.isChecked() and self.tipeBase==1):
+            print("Patrick C")
+            distancia = fl.RatingSimilitudCoseno(p11,p22,self.objetoClaseRecomender.self.objetoClaseRecomender.data)
+            self.textEdit.setText(str(distancia))
+            
+        if(self.CosenoAjustado.isChecked() and self.tipeBase==4 or self.tipeBase==3):
+            distancia = fl.RatingSimilitudCoseno(p11,p22,self.objetoClaseRecomender.data)
+            self.textEdit.setText(str(distancia))
+            
 if __name__ == "__main__":
     
     app = QApplication(sys.argv)

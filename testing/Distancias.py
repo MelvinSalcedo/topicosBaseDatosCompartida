@@ -1,11 +1,17 @@
 import codecs 
 import operator
+import csv
+
 import time
+import multiprocessing
+from multiprocessing import Queue
+from multiprocessing import Pool
+from multiprocessing import Process, Manager
 import math
 from math import sqrt
 import pickle
 from collections import defaultdict
-
+import multiprocessing as mp
 
 def GuardarBinario(obj, name ):
     with open('pkl_files/'+ name + '.pkl', 'wb') as f:
@@ -201,82 +207,27 @@ def distanciaEuclidiana(ratingsUser, ratingsUser2):
 
 def distanciaEuclidiana_mp(ratingsUser, ratingsUser2):
     distancia = 0#ratingsUser[0] usuario, ratingsUser[1]=rating
-
     for key in ratingsUser[1]:
         if key in ratingsUser2[1]:
             distancia += math.pow((ratingsUser[1][key] - ratingsUser2[1][key]),2)
             #print(distancia," = ",ratingsUser[1][key],ratingsUser2[1][key])     
     #print(ratingsUser2[0], math.sqrt(distancia),"Euclidiana----")
-
-    
     return (ratingsUser2[0], math.sqrt(distancia))
 
 
-
-def computeSimilarityAllMatriz(listNamesBandas,userRatings):
-    
-    longitud=len(listNamesBandas)
-    matriz={}
-    averages = {}
-    for (key, ratings) in userRatings.items():
-        averages[key] = (float(sum(ratings.values()))
-                         /len(ratings.values()))
-    print('\n\n',averages,'\n','\n')
-    
-    for x in range(longitud-1):
-        for y in range(x+1,longitud):
-            if(x!=y):
-                band1=listNamesBandas[x]; band2=listNamesBandas[y]
-                num = 0 
-                dem1 = 0 
-                dem2 = 0
-               # print(band1,band2)
-                for (user, ratings) in userRatings.items():
-                    if band1 in ratings and band2 in ratings:
-                        avg = averages[user]
-                        num += (ratings[band1] - avg) * (ratings[band2] - avg)
-                        #if(x==0):
-                         #   print((ratings[band1] ,'-', avg), "*" ,(ratings[band2] ,'-',avg))
-                        dem1 += (ratings[band1] - avg)**2
-                        dem2 += (ratings[band2] - avg)**2
-                d=(sqrt(dem1) * sqrt(dem2))
-                #if(x==0):
-                 #   print(num)
-                if(d==0):
-                    result=0
-                else:
-                    result=num / (sqrt(dem1) * sqrt(dem2))
-                #print("->",band1,band2,'\t',result )
-                
-                if band1 in matriz:
-                    currentRatings = matriz[band1]
-                else:
-                    currentRatings = {}
-                currentRatings[band2] = result
-                matriz[band1] = currentRatings
-    #print(matriz)
-    return matriz
-
-
-def RatingcomputeSimilar(user1,band,listNamesBandas,userRatings):
-    #'Patrick C', 'Alien',listaNombresBD, '
-    longitud=len(listNamesBandas)
+def RatingSimilitudCoseno(user1,band1,userRatings):
+    longitud=len(userRatings[user1])
     matriz={}
     averages = {}
     for (key, ratings) in userRatings.items():
         averages[key] = (float(sum(ratings.values()))
                          /len(ratings.values()))
     #print('\n\n',averages,'\n','\n')
-    print("total de usuarios",longitud);
-    denominador2=0
-    iii=0
-    for x,y in listNamesBandas.items():
+    #print("total de usuarios",longitud);
+    for (band2, rating) in userRatings[user1].items():
         num = 0 # numerator
         dem1 = 0 # first half of denominator
         dem2 = 0
-        band1=listNamesBandas[band]; band2=y
-        iii+=1
-        #print(iii)
         if(band1!=band2):
             for (user, ratings) in userRatings.items():
                 if band1 in ratings and band2 in ratings:
@@ -289,95 +240,33 @@ def RatingcomputeSimilar(user1,band,listNamesBandas,userRatings):
                 result=0
             else:
                 result=( num / cen)
-            denominador2+=abs(result)
             matriz[band2] = result
-    print("matriz calculada")
+    #print("matriz calculada",matriz)
     maxNumber=max(userRatings[user1].items(), key=operator.itemgetter(1))[1]
     minNumber=min(userRatings[user1].items(), key=operator.itemgetter(1))[1]
-    print("hallando maximos y minimos")
+    #print("hallando maximos y minimos",maxNumber,"--",minNumber)
     #print("max number is = ",maxNumber,minNumber);
     normalizeData={}
     for i,x in userRatings[user1].items():
         normalizeData[i]=(2*(x-minNumber)-(maxNumber-minNumber))/(maxNumber-minNumber)
-    print("data normalizada")    
+    #print("data normalizada")
+    #print(normalizeData)    
     numerador2=0
-    #Predecir el puntaje que X dará a Y
-    for i,x in normalizeData.items():
-        print(i,x)
-        if(i==listNamesBandas[band]):
-            print("el usuario ya califico a esta banda")
-            return "el usuario ya califico a esta banda"
-        if(i in matriz):
-            #print("-<> ",matriz[i],"|",normalizeData[i])
-            numerador2+=matriz[i]*normalizeData[i]
-            
-    p=numerador2/denominador2
-    #print("numerador= ",numerador2,"denominador= ",denominador2);
-    print(p)
-    #desnormalizar
-    resultadorFinal=0.5*((p+1)*(maxNumber-minNumber))+minNumber;
-    #print("resultado final = ",resultadorFinal)
-    return resultadorFinal
-
-def RatingcomputeSimilarOnlineForMovierating(user1,band,listNamesBandas,userRatings):
-    #'Patrick C', 'Alien',listaNombresBD, '
-    longitud=len(listNamesBandas)
-    matriz={}
-    averages = {}
-    for (key, ratings) in userRatings.items():
-        averages[key] = (float(sum(ratings.values()))
-                         /len(ratings.values()))
-    #print('\n\n',averages,'\n','\n')
-    print("total de usuarios",longitud);
     denominador2=0
-    iii=0
-    for x in range(len(listNamesBandas)):
-        num = 0 # numerator
-        dem1 = 0 # first half of denominator
-        dem2 = 0
-        band1=band; band2=listNamesBandas[x]
-        iii+=1
-        #print(iii)
-        if(band1!=band2):
-            for (user, ratings) in userRatings.items():
-                if band1 in ratings and band2 in ratings:
-                    avg = averages[user]
-                    num += (ratings[band1] - avg) * (ratings[band2] - avg)
-                    dem1 += (ratings[band1] - avg)**2
-                    dem2 += (ratings[band2] - avg)**2
-            cen=(sqrt(dem1) * sqrt(dem2))
-            if(cen==0):
-                result=0
-            else:
-                result=( num / cen)
-            denominador2+=abs(result)
-            matriz[band2] = result
-    print("matriz calculada")
-    maxNumber=max(userRatings[user1].items(), key=operator.itemgetter(1))[1]
-    minNumber=min(userRatings[user1].items(), key=operator.itemgetter(1))[1]
-    print("hallando maximos y minimos")
-    #print("max number is = ",maxNumber,minNumber);
-    normalizeData={}
-    for i,x in userRatings[user1].items():
-        normalizeData[i]=(2*(x-minNumber)-(maxNumber-minNumber))/(maxNumber-minNumber)
-    print("data normalizada")    
-    numerador2=0
     #Predecir el puntaje que X dará a Y
+    
     for i,x in normalizeData.items():
-        print(i,x)
-        if(i==band):
-            print("el usuario ya califico a esta banda")
-            return "el usuario ya califico a esta banda"
-        if(i in matriz):
-            #print("-<> ",matriz[i],"|",normalizeData[i])
+        if(i!=band1):
             numerador2+=matriz[i]*normalizeData[i]
-            
+            denominador2+=abs(matriz[i])
+        #print(i,x)
+    #print("num/den= ",numerador2,"/",denominador2,"=");          
     p=numerador2/denominador2
-    #print("numerador= ",numerador2,"denominador= ",denominador2);
-    print(p)
+    
+
     #desnormalizar
     resultadorFinal=0.5*((p+1)*(maxNumber-minNumber))+minNumber;
-    #print("resultado final = ",resultadorFinal)
+    print("RESULTADO FINAL = ",resultadorFinal)
     return resultadorFinal
 
 def loadBookDB(path=''):
@@ -397,24 +286,24 @@ def loadBookDB(path=''):
             user = fields[0].strip('"')
             book = fields[1].strip('"')
             rating = float(fields[2].strip().strip('"'))
-            if(rating!=0):
-                if user in data:
-                    currentRatings = data[user]
-                else:
-                    currentRatings = {}
-                currentRatings[book] = rating
-                data[user] = currentRatings
+            if user in data:
+                currentRatings = data[user]
+            else:
+                currentRatings = {}
+            currentRatings[book] = rating
+            data[user] = currentRatings
                 
         f.close()
         GuardarBinario(data, "Book_data")
-        #
+        print("hay ",i,len(data)," usuarios")
         # Now load books into self.productid2name
         # Books contains isbn, title, and author among other fields
         #
         f = codecs.open(path + "BX-Books.csv", 'r', 'utf8')
         nombres={}
+        t=0
         for line in f:
-            i += 1
+            t += 1
             #separate line into fields
             fields = line.split(';')
             isbn = fields[0].strip('"')
@@ -426,6 +315,7 @@ def loadBookDB(path=''):
         f.close()
         GuardarBinario(nombres,"Book_names")
         GuardarBinario(productid2name, "Book_productid2name")
+        print("hay ",t,len(nombres)," libros")
         #
         #  Now load user info into both self.userid2name and
         #  self.username2id
@@ -530,14 +420,12 @@ def loadMoviLens27():
                 user = fields[0].strip('"')
                 movie = fields[1].strip('"')
                 rating = float(fields[2].strip().strip('"'))
-                if(rating!=0):
-                    print(rating)
-                    if user in data:
-                        currentRatings = data[user]
-                    else:
-                        currentRatings = {}
-                    currentRatings[movie] = rating
-                    data[user] = currentRatings
+                if user in data:
+                    currentRatings = data[user]
+                else:
+                    currentRatings = {}
+                currentRatings[movie] = rating
+                data[user] = currentRatings
             except Exception:
                 continue
         print("archivo cerradp")
@@ -593,39 +481,37 @@ def loadMovieRating(path=''):
                                 currentRatings[fields[0]]=float(nombre)
                             data[user[i-1]] = currentRatings
             x+=1
-           
         f.close()
         GuardarBinario(data, "Movie_Ratings")
         GuardarBinario(namePeliculas, "Movie_Ratings_namePeliculas")
-        
         '''for i,k in data.items():    
-            print(i,k)'''
+            print(i,k,'\n')'''
         
         
 if __name__=="__main__":
-    users3 = {"David": {"2": 3, "3": 5,
-             "4": 4, "5": 1},
-             "Matt": {"2": 3, "3": 4,
-             "4": 4, "5": 1},
-             "Ben": {"1": 4, "2": 3,
-             "4": 3, "5": 1},
-             "Chris": {"1": 4, "2": 4,
-             "3": 4, "4": 3, "5": 1},
-             "Tori": {"1": 5, "2": 4,
-             "3": 5, "5": 3}}
-                
+    
     userRatings = CargarBinario("Movie_Ratings")
     listaNombresBD =CargarBinario("Movie_Ratings_namePeliculas")
+    RatingSimilitudCoseno('Josh', 'Blade Runner', userRatings)
+    #RatingSimilitudCoseno('Jessica', 'Village', userRatings)
+    #RatingSimilitudCoseno('ben', 'Kazaam', userRatings)
+    #RatingSimilitudCoseno('Stephen', 'Old School', userRatings)
+    #RatingSimilitudCoseno('Heather', 'Pootie Tang', userRatings)
     
-    RatingcomputeSimilarOnlineForMovierating('Patrick C', 'Alien',listaNombresBD, userRatings)
+    #userRatings = CargarBinario("Book_data")
+    #RatingSimilitudCoseno('276927', '1885408226',userRatings)
+    #RatingSimilitudCoseno('243', '034545104X',userRatings)
     
-    listaNombresBD = {'Kacey Musgraves':'1','Imagine Dragons':'2','Daft Punk':'3', '4':'4','Fall Out Boy':'5'}
-    RatingcomputeSimilar('David', 'Kacey Musgraves',listaNombresBD, users3)
+    #userRatings = CargarBinario("movilens27k_data")
+    #RatingSimilitudCoseno('35826', '307',userRatings)
+    #RatingSimilitudCoseno('9782', '2125',userRatings)
+    #RatingSimilitudCoseno('1', '5',userRatings)
+    #RatingSimilitudCoseno('123100', '3898',userRatings)
     
-<<<<<<< HEAD:testing/Distancias.py
+    #userRatings = CargarBinario("movilens1k_data")
+    #RatingSimilitudCoseno('1', '1',userRatings)
     
-=======
->>>>>>> a0a939f541e2e2dfa39a5995037d4f388474f541:Distancias.py
+
     #loadMoviLens27()
     #loadMovieRating()
     #loadBookDB("dataBook/")

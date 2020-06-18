@@ -32,32 +32,30 @@ int main(int argc, char ** argv){
 
 	for(ValVec vec : valsNorm){
 		printValVec(vec);
-	} 
+	}
 
 	IndexType userIndex = 0;
 	IndexType productIndex = 0;	
 
 	while(true){
-		for(int i = 0; i < names.size(); i++){
-			cout<<i<<") "<<names[i]<<endl;
-		}
+		//for(int i = 0; i < names.size(); i++){
+		//	cout<<i<<") "<<names[i]<<endl;
+		//}
 
 		cout<<endl<<"Usuario->";
 		cin>>userIndex;
 		cout<<endl;
 
-		for(int i = 0; i < songs.size(); i++){
-			cout<<i<<") "<<songs[i]<<endl;
-		}
+		//for(int i = 0; i < songs.size(); i++){
+		//	cout<<i<<") "<<songs[i]<<endl;
+		//}
 
 		cout<<endl<<"Producto->";
 		cin>>productIndex;
 		cout<<endl;
 
 		auto resN = prediccionPorProducto(simMat, valsNorm, productIndex, userIndex);
-		
 
-		//cout<<"matriz"<< SimilarityMatrix(vals)<<endl;
 		cout<<"resN->"<<resN<<endl;
 
 		cout<<"El usuario "<<names[userIndex]<<" daría "<<desnormalize(vals, resN, userIndex)<<" al producto "<<songs[productIndex]<<endl<<endl;

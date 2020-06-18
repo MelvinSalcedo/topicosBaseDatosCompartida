@@ -24,15 +24,15 @@ int main(int argc, char ** argv){
 
 	auto simMat = getSimilarityMatrix(vals);
 
-	for(ValVec vec : vals){
-		printValVec(vec);
-	}
+	//for(ValVec vec : vals){
+	//	printValVec(vec);
+	//}
 
-	cout<<endl;
+	//cout<<endl;
 
-	for(ValVec vec : valsNorm){
-		printValVec(vec);
-	}
+	//for(ValVec vec : valsNorm){
+	//	printValVec(vec);
+	//}
 
 	IndexType userIndex = 0;
 	IndexType productIndex = 0;	

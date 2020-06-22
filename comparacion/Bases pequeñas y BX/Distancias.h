@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <functional>
+#include "Utils.h"
 
 typedef function<ValType(ValVec &, ValVec &)> DistanceFunction;
 

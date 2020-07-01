@@ -18,7 +18,7 @@ import Distancias as fl
 
 class recommender:
 
-    def __init__(self,k=1,metric='Pearson'):
+    def __init__(self,data={},k=1,metric='Pearson'):
         self.listaNombresBD=[]
         self.usuario_existe=1
         self.k = k
@@ -29,8 +29,12 @@ class recommender:
         self.productid2name = {}
         self.metric = metric
         self.VecinosCercanos=[]
-        self.data = {}
+        self.data = data
         self.rr=1
+        self.frequencies = {}
+        self.deviations = {}
+        self.result={}
+        self.sumasResult={}
             
     def GuardarBinario(self,obj, name ):
         with open('pkl_files/'+ name + '.pkl', 'wb') as f:
@@ -86,6 +90,7 @@ class recommender:
         print(self.listaNombresBD)
         
         print("________________")
+    
     def loadMovieLens27m(self):
         self.data={}
         self.productid2name={}
@@ -114,7 +119,74 @@ class recommender:
             print("USUARIO NO EXISTE")
             self.usuario_existe=-1
             return -1
+    
+    def computeDeviationsAllMatriz(self):
+        for ratings in self.data.values():
+            for (item, rating) in ratings.items():
+                self.frequencies.setdefault(item, {})
+                self.deviations.setdefault(item, {})
+                for (item2, rating2) in ratings.items():
+                    if item != item2:
+                        # add the difference between the ratings
+                        # to our computation
+                        self.frequencies[item].setdefault(item2, 0)
+                        self.deviations[item].setdefault(item2, 0.0)
+                        self.frequencies[item][item2] += 1
+                        self.deviations[item][item2] += rating - rating2
+        for (item, ratings) in self.deviations.items():
+            for item2 in ratings:
+                ratings[item2] /= self.frequencies[item][item2]
+                
+    def slopeOneRecommendations(self, userRatings):
+        recommendations = {}
+        frequencies = {}
+        # for every item and rating in the user's recommendations
+        for (userItem, userRating) in userRatings.items():
+            # for every item in our dataset that the user didn't rate
+            for (diffItem, diffRatings) in self.deviations.items():
+                if diffItem not in userRatings and \
+                    userItem in self.deviations[diffItem]:
+                    freq = self.frequencies[diffItem][userItem]
+                    recommendations.setdefault(diffItem, 0.0)
+                    frequencies.setdefault(diffItem, 0)
+                    # add to the running sum representing the numerator
+                    # of the formula
+                    recommendations[diffItem] += (diffRatings[userItem] +userRating) * freq
+                    # keep a running sum of the frequency of diffitem
+                    frequencies[diffItem] += freq
+        recommendations = [(self.convertProductID2name(k),
+                            v / frequencies[k])
+                           for (k, v) in recommendations.items()]
+        # finally sort and return
+        recommendations.sort(key=lambda artistTuple: artistTuple[1],reverse = True)
+        return recommendations
+    
+    def computeDeviations2(self,name,banda1):
+        for n,r in self.data[name].items():
+            suma=0
+            t1=0
+            caso=0
+            for x,y in self.data.items():
+                if(banda1 in y and n in y):
+                    caso=1
+                    t1+=y[banda1]-y[n]
+                    suma+=1
+            #print("suma = ",suma)
+            if(caso==1):
+                self.result[n]=t1/suma
+            else:
+                 self.result[n]=0
+            self.sumasResult[n]=suma
+            #print(banda1,n,t1/suma)
             
+    def slopeOneRecommendations2(self, name,banda):
+        sumatoriaTotal=0
+        denominador=0
+        for x,y in self.data[name].items():
+            sumatoriaTotal+=(y+self.result[x])*self.sumasResult[x]
+            denominador+=self.sumasResult[x]
+        print("ResultadoFinal= ",sumatoriaTotal/denominador)
+       
     def cacularDistanciasKnn(self, username):
         if(self.ususarioExiste(username)==-1):
             return
@@ -282,9 +354,6 @@ class ejemplo_GUI(QMainWindow):
             self.objetoClaseRecomender.loadMovieLens27m()
         print("data cambiada",self.tipeBase)
             
-        
-            
-
     def IniciarConsultaDistancia(self):
         texto=0
         distancia=None
@@ -361,8 +430,6 @@ class ejemplo_GUI(QMainWindow):
             pair=str(KnnName[i][0])+"\t\t"+str(KnnName[i][1])
             self.textEdit.append(pair)
         #self.textEdit.setText(listaR)
-
-        
     def IniciarConsultaKnn(self):
         if(self.DistanciaE.isChecked()):
             self.objetoClaseRecomender.metric="Euclidiana"
@@ -388,8 +455,7 @@ class ejemplo_GUI(QMainWindow):
         p=self.objetoClaseRecomender.vecinoscercarnosMostrar(p1,int(k)-1)
 
         self.textEdit.setText(p)
-
-
+        
     def CalcularCA(self):
         distancia=None
         p11=self.Usuario1.text()
@@ -400,24 +466,61 @@ class ejemplo_GUI(QMainWindow):
             return
         #RatingcomputeSimilar('1', 'Toy Story (1995)',listaNombresBD, userRatings)
         if(self.CosenoAjustado.isChecked() and self.tipeBase==0):
-            distancia = fl.RatingSimilitudCoseno(p11,p22,self.objetoClaseRecomender.data)
+            distancia = fl.RatingCosenoAjustado(p11,p22,self.objetoClaseRecomender.data)
             self.textEdit.setText(str(distancia))
         
         if(self.CosenoAjustado.isChecked() and self.tipeBase==1):
             print("Patrick C")
-            distancia = fl.RatingSimilitudCoseno(p11,p22,self.objetoClaseRecomender.self.objetoClaseRecomender.data)
+            distancia = fl.RatingCosenoAjustado(p11,p22,self.objetoClaseRecomender.self.objetoClaseRecomender.data)
             self.textEdit.setText(str(distancia))
             
         if(self.CosenoAjustado.isChecked() and self.tipeBase==4 or self.tipeBase==3):
-            distancia = fl.RatingSimilitudCoseno(p11,p22,self.objetoClaseRecomender.data)
+            distancia = fl.RatingCosenoAjustado(p11,p22,self.objetoClaseRecomender.data)
             self.textEdit.setText(str(distancia))
             
 if __name__ == "__main__":
+    users2 = {"Amy": {"Taylor Swift": 4, "PSY": 3, "Whitney Houston": 4},
+              "Ben": {"Taylor Swift": 5, "PSY": 2},
+              "Clara": {"PSY": 3.5, "Whitney Houston": 4},
+              "Daisy": {"Taylor Swift": 5, "Whitney Houston": 3}}
     
-    app = QApplication(sys.argv)
+    #Movie_Ratings
+    #Book_data
+    #movilens1k_data
+    #Book_data
+    
+    pp = fl.CargarBinario("Movie_Ratings") 
+    p = recommender(pp)
+    user="Patrick C"
+    peli="Village"
+    p.computeDeviations2(user,peli);
+    p.slopeOneRecommendations2(user,"")
+    
+    #sss = fl.CargarBinario("Book_data") 
+    #r = recommender(sss)
+    #////////////////////////////////////////
+    #150896 , 0451523652 = Pride and Prejudice
+    #194864 , 8445071769 = El Senor De Los Anillos: Las DOS Torres
+    #243 , 034545104X = Flesh Tones
+    #276744 ,  3453092007 = predice a  Die zweite Haut
+    # 
+    #user="243"
+    #peli="034545104X"
+    #r.computeDeviations2(user,peli);
+    #r.slopeOneRecommendations2(user,"")
+    
+    #////////////////////////////////////////
+    print("\n")
+    s = recommender(pp)
+    s.computeDeviationsAllMatriz()
+    g = pp[user]
+    print(s.slopeOneRecommendations(g))
+    
+    
+    '''app = QApplication(sys.argv)
     GUI = ejemplo_GUI()
     GUI.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec_())'''
     #r = recommender()
     #r.loadMovieLens27m()
     '''a = perf_counter()  

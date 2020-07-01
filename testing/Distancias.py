@@ -214,8 +214,7 @@ def distanciaEuclidiana_mp(ratingsUser, ratingsUser2):
     #print(ratingsUser2[0], math.sqrt(distancia),"Euclidiana----")
     return (ratingsUser2[0], math.sqrt(distancia))
 
-
-def RatingSimilitudCoseno(user1,band1,userRatings):
+def RatingCosenoAjustado(user1,band1,userRatings):
     longitud=len(userRatings[user1])
     matriz={}
     averages = {}
@@ -246,6 +245,9 @@ def RatingSimilitudCoseno(user1,band1,userRatings):
     minNumber=min(userRatings[user1].items(), key=operator.itemgetter(1))[1]
     #print("hallando maximos y minimos",maxNumber,"--",minNumber)
     #print("max number is = ",maxNumber,minNumber);
+    if(maxNumber==minNumber):
+        print("No se puede dividir entre 0")
+        return "No se puede dividir entre 0 , max=min"
     normalizeData={}
     for i,x in userRatings[user1].items():
         normalizeData[i]=(2*(x-minNumber)-(maxNumber-minNumber))/(maxNumber-minNumber)
@@ -254,19 +256,19 @@ def RatingSimilitudCoseno(user1,band1,userRatings):
     numerador2=0
     denominador2=0
     #Predecir el puntaje que X dará a Y
-    
     for i,x in normalizeData.items():
         if(i!=band1):
             numerador2+=matriz[i]*normalizeData[i]
             denominador2+=abs(matriz[i])
         #print(i,x)
-    #print("num/den= ",numerador2,"/",denominador2,"=");          
+    #print("num/den= ",numerador2,"/",denominador2,"=");    
+    if(denominador2==0):
+        print("No se puede dividir entre 0")
+        return "No se puede dividir entre 0"
     p=numerador2/denominador2
-    
-
     #desnormalizar
     resultadorFinal=0.5*((p+1)*(maxNumber-minNumber))+minNumber;
-    print("RESULTADO FINAL = ",resultadorFinal)
+    print("RESULTADO FINAL ENTRE ",user1," Y ",band1 ,"=\t",resultadorFinal)
     return resultadorFinal
 
 def loadBookDB(path=''):
@@ -432,7 +434,6 @@ def loadMoviLens27():
         GuardarBinario(data, "movilens27k_data")
         f.close()
 
-
 def loadMovieRating(path=''):
         data = {}
         user=[]
@@ -486,32 +487,64 @@ def loadMovieRating(path=''):
         GuardarBinario(namePeliculas, "Movie_Ratings_namePeliculas")
         '''for i,k in data.items():    
             print(i,k,'\n')'''
-        
+
+userRatings=None
+def MeterUsuario(user,ItemsCalifica ):
+    for item,rating in ItemsCalifica.items():
+        #print(item,rating)
+    
+        if user in userRatings:
+            currentRatings = userRatings[user]
+        else:
+            currentRatings = {}
+        currentRatings[item] = rating
+        userRatings[user] = currentRatings
+
+
+def MeterItem(Item,usuariosCaficaron ):
+    for Nombre,rating in usuariosCaficaron.items():
+        print(Nombre,rating)
+        if Nombre in userRatings:
+            currentRatings = userRatings[Nombre]
+        else:
+            currentRatings = {}
+        currentRatings[Item] = rating
+        userRatings[Nombre] = currentRatings
         
 if __name__=="__main__":
     
+    
+    t1=time.time()
     userRatings = CargarBinario("Movie_Ratings")
-    listaNombresBD =CargarBinario("Movie_Ratings_namePeliculas")
-    RatingSimilitudCoseno('Josh', 'Blade Runner', userRatings)
-    #RatingSimilitudCoseno('Jessica', 'Village', userRatings)
-    #RatingSimilitudCoseno('ben', 'Kazaam', userRatings)
-    #RatingSimilitudCoseno('Stephen', 'Old School', userRatings)
-    #RatingSimilitudCoseno('Heather', 'Pootie Tang', userRatings)
+    RatingCosenoAjustado('Josh', 'Blade Runner', userRatings)
+    RatingCosenoAjustado('Jessica', 'Village', userRatings)
+    RatingCosenoAjustado('ben', 'Kazaam', userRatings)
+    RatingCosenoAjustado('Stephen', 'Old School', userRatings)
+    RatingCosenoAjustado('Heather', 'Pootie Tang', userRatings)
+    #ingresar ususario y que peliculas a calificado
+    MeterUsuario("Jose",{"Alien":2,"Avatar":4,"Jaws":8,"Scarface":1,"Village":5});
+    RatingCosenoAjustado('Jose', 'Kazaam', userRatings)
+    #ingresar un item que y que ususarios lo calificaron
+    MeterItem("Terror",{"Josh":2,"Heather":4,"ben":8,"aaron":1,"Gary":5});
+    RatingCosenoAjustado('Jose', 'Kazaam', userRatings)
     
-    #userRatings = CargarBinario("Book_data")
-    #RatingSimilitudCoseno('276927', '1885408226',userRatings)
-    #RatingSimilitudCoseno('243', '034545104X',userRatings)
-    
-    #userRatings = CargarBinario("movilens27k_data")
-    #RatingSimilitudCoseno('35826', '307',userRatings)
-    #RatingSimilitudCoseno('9782', '2125',userRatings)
-    #RatingSimilitudCoseno('1', '5',userRatings)
-    #RatingSimilitudCoseno('123100', '3898',userRatings)
+    '''userRatings = CargarBinario("Book_data")
+    RatingCosenoAjustado('92', '0440234743',userRatings)
+    RatingCosenoAjustado('276726', '034545104X',userRatings)
+    RatingCosenoAjustado('276927', '1885408226',userRatings)
+    RatingCosenoAjustado('243', '034545104X',userRatings)
     
     #userRatings = CargarBinario("movilens1k_data")
-    #RatingSimilitudCoseno('1', '1',userRatings)
+    #RatingCosenoAjustado('1', '1',userRatings)
     
-
+    userRatings = CargarBinario("movilens27k_data")
+    RatingCosenoAjustado('35826', '307',userRatings)
+    RatingCosenoAjustado('9782', '2125',userRatings)
+    RatingCosenoAjustado('1', '5',userRatings)
+    RatingCosenoAjustado('123100', '3898',userRatings)'''
+    
+    
+    print("Tiempo = ",time.time()-t1)    
     #loadMoviLens27()
     #loadMovieRating()
     #loadBookDB("dataBook/")

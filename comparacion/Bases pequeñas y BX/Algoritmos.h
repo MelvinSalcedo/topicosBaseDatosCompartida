@@ -13,7 +13,7 @@
 using namespace std;
 
 typedef tuple<IndexType, ValType, PercentageType> KNNTuple;
-typedef tuple<IndexType, ValVec, ValVec> ValVecTuple; // 0 indice del otro, 1 ValVec del choseOne, 2 Valvec del otro
+typedef tuple<IndexType, ValVec, ValVec> ValVecTuple;
 
 typedef function<bool(KNNTuple,KNNTuple)> SortFun;
 
@@ -112,9 +112,6 @@ vector<KNNTuple> KNNCoseno(vector<ValVecTuple> & vals, IndexType subjectIndex, i
 	return res;
 }
 
-
-/*Recomienda productos(libro, película) segun el más cercano
-  El ValVec valores contiene todos los valores de los productos del mas cercano*/
 vector<IndexType> recomendNearest(ValVec & valores){
 	ValType mayor = 0;
 	vector<IndexType> actual;
@@ -129,8 +126,6 @@ vector<IndexType> recomendNearest(ValVec & valores){
 	return actual;
 }
 
-/*Porcentaje Proyectado segun un solo producto
-  El ValVec valores contiene las valoraciones para ese producto de los ususarios de KnnVec*/
 ValType porcentajeProyectado(vector<KNNTuple> & KnnVec, ValVec valores){
 	ValType res = 0;
 	for(int i = 0; i < valores.size(); i++){
@@ -325,7 +320,7 @@ MovieLensVectorDesviacion getvectorDesviacion(map<int, map<int,ValType>> & vals,
 	auto actualMovie = vals.find(movieId);
 	map<int,ValType> * actualUser = &valsUser[userId];
 	if(actualMovie == vals.end()){
-		cout<<"El libro no tiene ranqkings"<<endl;
+		cout<<"La pelicula no tiene rankins"<<endl;
 		return res;
 	}
 	map<int,ValType>::iterator findMovie;

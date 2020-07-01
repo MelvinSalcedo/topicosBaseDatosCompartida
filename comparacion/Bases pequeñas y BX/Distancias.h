@@ -89,14 +89,13 @@ ValType cosenoAjustado(ValVec & x, ValVec & y, ValVec & proms){
 	}
 	ValType t = (sqrt(t1) * sqrt(t2));
 	if(t == 0){
-		//cout<<"Ahhhhhhhh!!! Divison entre cero"<<endl;
 		return -1;
 	}
 	
 	return (ValType)  d / t;
 }
 
-ValType desviacionEstandar(ValVec & x, ValVec & y){ //tienes que pasar los vectores con los valores que hacen match
+ValType desviacionEstandar(ValVec & x, ValVec & y){ 
 	float cardinalidad = x.size();
 	ValType res = 0;
 	for(int i = 0; i < x.size(); i++){

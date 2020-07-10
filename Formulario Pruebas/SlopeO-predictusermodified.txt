@@ -1,0 +1,73 @@
+jhunior@master:~/Documentos/UNSA/quinto/TBD-practica/topicosBaseDatosCompartida/slope$ ./a.out 
+Cargando Base de Datos...
+cargue bien ambos
+Done->41.2351s
+Generando estructura Movies...
+Done->0.07564s
+Generando estructura InterbyUser...
+Done->17.4562s
+Generando estructura InterbyProduct...
+Done->80.1195s
+
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->2
+
+UserId->50
+MovieId->80
+El usuario 49 pondría el puntaje 4.43579 al libro "White Balloon
+1.1643s
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->4
+
+UserId->162542
+Bienvenido usuario 162542
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->80
+Puntaje->5
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->3
+
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->2
+
+UserId->50
+MovieId->80
+El usuario 49 pondría el puntaje 4.43615 al libro "White Balloon
+1.21455s
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3

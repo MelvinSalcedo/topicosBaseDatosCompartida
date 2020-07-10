@@ -1,0 +1,414 @@
+jhunior@master:~/Documentos/UNSA/quinto/TBD-practica/topicosBaseDatosCompartida/slope$ ./a.out 
+Cargando Base de Datos...
+cargue bien ambos
+Done->40.3791s
+Generando estructura Movies...
+Done->0.070184s
+Generando estructura InterbyUser...
+Done->18.2643s
+Generando estructura InterbyProduct...
+Done->81.3692s
+
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->3
+
+Nuevo usuario creado
+Id del nuevo usuario->162542
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->4
+
+UserId->162542
+Bienvenido usuario 162542
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->1
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->296
+Puntaje->2
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->2
+Puntaje->4
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->3
+Puntaje->8
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->4
+Puntaje->1
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->5
+Puntaje->5
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->6
+Puntaje->2
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->7
+Puntaje->4
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->8
+Puntaje->8
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2 
+
+MovieId->9
+Puntaje->1
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->10
+Puntaje->5
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2 
+
+MovieId->11
+Puntaje->2
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->12
+Puntaje->4
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->13
+Puntaje->8
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->14
+Puntaje->1
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->15
+Puntaje->5
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->16
+Puntaje->2
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->17
+Puntaje->4
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->18 
+Puntaje->8
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->19
+Puntaje->1
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->20
+Puntaje->5
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->1
+
+2 4
+3 8
+4 1
+5 5
+6 2
+7 4
+8 8
+9 1
+10 5
+11 2
+12 4
+13 8
+14 1
+15 5
+16 2
+17 4
+18 8
+19 1
+20 5
+296 2
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->3
+
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->2
+
+UserId->162542
+MovieId->1
+El usuario 162541 pondría el puntaje 3.67956 al libro Toy Story (1995)
+0.324024s
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->2
+
+UserId->162542
+MovieId->100
+El usuario 162541 pondría el puntaje 3.30432 al libro City Hall (1996)
+0.219335s
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->4
+
+UserId->162542
+Bienvenido usuario 162542
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->1
+
+2 4
+3 8
+4 1
+5 5
+6 2
+7 4
+8 8
+9 1
+10 5
+11 2
+12 4
+13 8
+14 1
+15 5
+16 2
+17 4
+18 8
+19 1
+20 5
+296 2
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2
+
+MovieId->200
+Puntaje->4
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->1
+
+2 4
+3 8
+4 1
+5 5
+6 2
+7 4
+8 8
+9 1
+10 5
+11 2
+12 4
+13 8
+14 1
+15 5
+16 2
+17 4
+18 8
+19 1
+20 5
+200 4
+296 2
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->2 
+
+MovieId->90
+Puntaje->3
+Pelicula ranqueada correctamente
+
+1) Mis ranqueados
+2) Ranquear pelicula
+3) Cerrar Sesion
+Opcion->3
+
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->2
+
+UserId->162542
+MovieId->90
+El libro ya ha sido ranqueado por este usuario
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->2
+
+UserId->162542
+MovieId->91
+El libro no tiene rankings
+El usuario 162541 pondría el puntaje 3.95455 al libro 
+7.3e-05s
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3
+Opcion->2
+
+UserId->162542
+MovieId->87
+El usuario 162541 pondría el puntaje 2.85819 al libro Dunston Checks In (1996)
+0.225941s
+
+1) Busqueda
+2) Prediccion
+3) Nuevo Usuario
+4) Iniciar Sesion
+5) Recomendacion1
+6) Recomendacion2
+7) Recomendacion3

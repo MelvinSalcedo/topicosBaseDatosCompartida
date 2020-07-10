@@ -437,7 +437,7 @@ void Recommender::predict_all(ListItem &first_list){
             oss << user << ":" << item << "," << prediction << "\n";
         }
         //ofile.close();
-        //final_predictions.write_csv("./data/predictions.csv");
+        //final_predictions.write_csv("predictions.csv");
         f.close();
     }
     cout << oss.str();
